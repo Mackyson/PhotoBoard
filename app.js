@@ -13,7 +13,8 @@ var cnt = 0;
 
 http.createServer(function (req, res) {
     if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
-
+        res.writeHead(200, { 'content-type': 'text/html' });
+        res.write ('<meta charset= "utf-8"><script>alert("後ろの画面が変わるまでお待ちください")</script>');
         // parse a file upload
         var form = new formidable.IncomingForm();
         form.uploadDir = submitpath;
