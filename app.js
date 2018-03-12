@@ -14,7 +14,6 @@ var cnt = 0;
 http.createServer(function (req, res) {
     if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
         res.writeHead(200, { 'content-type': 'text/html' });
-        res.write ('<meta charset= "utf-8"><script>alert("後ろの画面が変わるまでお待ちください")</script>');
         // parse a file upload
         var form = new formidable.IncomingForm();
         form.uploadDir = submitpath;
@@ -38,8 +37,9 @@ http.createServer(function (req, res) {
     // show a file upload form
     res.writeHead(200, { 'content-type': 'text/html' });
     res.end(
-        '<form action="/upload" enctype="multipart/form-data" method="post">' +
+        '<form name = "main" action="/upload" enctype="multipart/form-data" method="post">' +
         '<br>' +
+        '<script>document.forms.main.onsubmit = function(){thumb.innerHTML="";return true;}</script>'+
         '<meta charset = "utf-8">' +
         '<label for="file_photo">' +
         '＋写真を撮影 ' +
