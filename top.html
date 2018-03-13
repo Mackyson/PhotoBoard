@@ -9,11 +9,21 @@
     <form name="main" action="/upload" enctype="multipart/form-data" method="post">
         <script>document.forms.main.onsubmit = function () { thumb.innerHTML = ""; return true; }</script>
 
+        <label for="file_photo">＋写真を撮影</label>
+        <input type="file" id="file_photo" style="display:none;" name="upload" accept="image/*" capture="camera"><br><br><br>
+        
+        <style>
+            label {
+                padding: 6px;
+                color: white;
+                background-color: red;
+                border-radius: 12px;
+            }
+        </style>
+
         <div id="thumb" />
         <input type="submit" value="upload" style="display:none;" />
 
-        <label for="file_photo">＋写真を撮影</label>
-        <input type="file" id="file_photo" style="display:none;" name="upload" accept="image/*" capture="camera">
     </form>
 
 
@@ -34,15 +44,5 @@
             }, false);
         }
     </script>
-
-
-    <style>
-        label {
-            padding: 6px;
-            color: white;
-            background-color: red;
-            border-radius: 12px;
-        }
-    </style>
 </body>
 </html>
