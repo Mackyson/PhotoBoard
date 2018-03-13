@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>submit</title>
+</head>
+<body>
+    <form name="main" action="/upload" enctype="multipart/form-data" method="post">
+        <script>document.forms.main.onsubmit = function () { thumb.innerHTML = ""; return true; }</script>
+
+        <div id="thumb" />
+        <input type="submit" value="upload" style="display:none;" />
+
+        <label for="file_photo">＋写真を撮影</label>
+        <input type="file" id="file_photo" style="display:none;" name="upload" accept="image/*" capture="camera">
+    </form>
+
+
+    <script>
+        if (window.File) {
+            var thumb = document.getElementById("thumb");
+            var select = document.getElementById("file_photo");
+            select.addEventListener("change", function (e) {
+                var fileData = e.target.files[0];
+                var imgType = fileData.type;
+
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var insert = "<input type = 'image' src=" + reader.result + " alt = '撮影してください'><br>";
+                    thumb.innerHTML = insert;
+                };
+                reader.readAsDataURL(fileData);
+            }, false);
+        }
+    </script>
+
+
+    <style>
+        label {
+            padding: 6px;
+            color: white;
+            background-color: red;
+            border-radius: 12px;
+        }
+    </style>
+</body>
+</html>
