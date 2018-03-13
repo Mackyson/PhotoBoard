@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./setting">
+    <title>submit</title>
+
+    <script>
+        function view() {
+            cnt = count;
+            if (cnt > 0) {
+                n = Math.floor(Math.random() * cnt);
+                document.getElementById("thumbnail").innerHTML = "<img src='./image" + n + "'>";
+                setTimeout("view()", 5000);
+            } else {
+                document.getElementById("image").innerHTML = "表示できる画像がありません";
+            }
+        }
+    </script>
+</head>
+<body onload="view()">
+    <form name="main" action="/upload" enctype="multipart/form-data" method="post">
+        <script>document.forms.main.onsubmit = function () { thumb.innerHTML = ""; return true; }</script>
+        <div id="whole">
+            <div id="thumbnail">
+                <div id="image"></div>
+            </div>
+
+            <div id="submit_form">
+                <label for="file_upload">＋画像を追加</label>
+            </div>
+            <input type="file" id="file_upload" style="display:none;" name="upload" accept="image/*" capture="camera">
+        </div>
+    </form>
+
+
+    <script>
+        if (window.File) {
+            var thumbnail = document.getElementById("thumbnail");
+            var submit_form = document.getElementById("submit_form");
+            var select = document.getElementById("file_upload");
+            select.addEventListener("change", function (e) {
+                var fileData = e.target.files[0];
+                var imgType = fileData.type;
+
+                var reader = new FileReader();
+                reader.onload = function () {
+                    thumbnail.innerHTML = "<img src=" + reader.result + ">";
+                    insert = "<label for='file_submit'>アップロード</label><input type='image' id='file_submit' src=" + reader.result + " alt='' style='display: none;'>";
+                    submit_form.innerHTML = insert;
+                };
+                reader.readAsDataURL(fileData);
+            }, false);
+        }
+    </script>
+
+</body>
+</html>
