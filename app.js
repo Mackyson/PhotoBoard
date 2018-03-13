@@ -10,9 +10,23 @@ var submitpath = "./submit/upload";
 var port = 1337;
 var url = 'http://' + '127.0.0.1' + ':' + port + '';
 var cnt = 0;
+var path = "";
 
 http.createServer(function (req, res) {
-	if (req.url == '/upload' && req.method == 'POST') {
+	if (req.url == '/') {
+		// show a file upload form
+		fs.readFile('./top.html', 'utf-8', function (err, text) {
+			res.writeHead(200, { 'content-type': 'text/html' });
+			text = text.replace("count", cnt);
+			res.end(text);
+		});
+	} else if (req.url == '/setting') {
+		fs.readFile('./setting.css', 'utf-8', function (err, text) {
+			res.writeHead(200, { 'content-type': 'text/css' });
+			text = text.replace("count", cnt);
+			res.end(text);
+		});
+	} else if (req.url == '/upload' && req.method == 'POST') {
 		res.writeHead(200, { 'content-type': 'text/html' });
 		// parse a file upload
 		var form = new formidable.IncomingForm();
@@ -22,20 +36,29 @@ http.createServer(function (req, res) {
 		form.parse(req, function (err, fields, files) {
 			res.writeHead(200, { 'background-color': 'red' });
 			res.end('<a href ="' + url + '">Complete!</a>');
-			cnt++;
 		});
 
 		form.on('fileBegin', function (name, file) {
-			console.log(file.path);
+			path = file.path;
+			console.log(path);
 			file.path = submitpath + "/" + cnt + ".jpg";
 			console.log("Your file was submitted as \n" + submitpath + "/" + (cnt) + ".jpg");
+			cnt++;
 		});
-	} else {
-		// show a file upload form
-		fs.readFile('./top.html', 'utf-8', function (err, text) {
-			res.writeHead(200, { 'content-type': 'text/html' });
-			res.end(text);
-		});
+
+	}else {
+		for (i = 0; i < cnt; i++) {
+			if (req.url == '/image' + i) {
+				fs.readFile('./submit/upload/' + i + '.jpg', function (err, data) {
+					if (err) {
+						console.log(err);
+					} else {
+						res.writeHead(200, { 'content-type': 'image/jpeg' });
+						res.end(data);
+					}
+				});
+			}
+		}
 	}
 }).listen(port);
 
