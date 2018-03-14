@@ -1,79 +1,52 @@
-//app.js
+// app.js
 var http = require('http'),
-    util = require('util'),
-    fs = require('fs'),
-    formidable = require('formidable');
+	util = require('util'),
+	fs = require('fs'),
+	formidable = require('formidable');
 
-//ファイル保存場所
+// �t�@�C���ۑ��ꏊ
 var submitpath = "./submit/upload";
-//ポート番号
+// �|�[�g�ԍ�
 var port = 1337;
-var hostname = "127.0.0.1";
+var hostname = '127.0.0.1';
+var url = 'http://' + hostname + ':' + port + '';
 var cnt = 0;
+var path = "";
 
 http.createServer(function (req, res) {
-    if (req.url == '/upload' && req.method.toLowerCase() == 'post') {
-        res.writeHead(200, { 'content-type': 'text/html' });
-        // parse a file upload
-        var form = new formidable.IncomingForm();
-        form.uploadDir = submitpath;
+	if (req.url == '/') {
+		// show a file upload form
+		fs.readFile('./top.html', 'utf-8', function (err, text) {
+			res.writeHead(200, { 'content-type': 'text/html' });
+			text = text.replace("count", cnt);
+			res.end(text);
+		});
+	} else if (req.url == '/setting') {
+		fs.readFile('./setting.css', 'utf-8', function (err, text) {
+			res.writeHead(200, { 'content-type': 'text/css' });
+			text = text.replace("count", cnt);
+			res.end(text);
+		});
+	} else if (req.url == '/upload' && req.method == 'POST') {
+		res.writeHead(200, { 'content-type': 'text/html' });
+		// parse a file upload
+		var form = new formidable.IncomingForm();
+		form.uploadDir = submitpath;
 
 
+		form.parse(req, function (err, fields, files) {
+			res.writeHead(200, { 'background-color': 'red' });
+			res.end('<a href ="' + url + '">Complete!</a>');
+		});
 
-        form.parse(req, function (err, fields, files) {
-            //res.writeHead(200, { 'content-type': 'text/html' });
-            res.write('<a href ="http://' + hostname + ':' + port + '">Complete!</a>\n\n');
-            res.end();
-            cnt++;
-        });
-        form.on('fileBegin', function (name, file) {
-            console.log(file.path);
-            file.path = submitpath + "/" + cnt + ".jpg";
-            console.log("your file was submitted as \n" + submitpath + "/" + (cnt) + ".jpg");
-        });
-
-        return;
-    }
-    // show a file upload form
-    res.writeHead(200, { 'content-type': 'text/html' });
-    res.end(
-        '<form name = "main" action="/upload" enctype="multipart/form-data" method="post">' +
-        '<br>' +
-        '<script>document.forms.main.onsubmit = function(){thumb.innerHTML="";return true;}</script>'+
-        '<meta charset = "utf-8">' +
-        '<label for="file_photo">' +
-        '＋写真を撮影 ' +
-        '</label>' +
-        '<input type="file" id="file_photo" style="display:none;" name="upload" accept= "image/*" capture="camera"><br><br><br>' +
-        '<style>' +
-        'label {' +
-        'color: white;' +
-        'background-color: red;' +
-        ' padding: 6px;' +
-        'border-radius: 12px;' +
-        '}' +
-        '</style>' +
-        '<div id ="thumb">' +
-        '<input type="submit" value="Upload"style="display:none;">' +
-        '</form>' +
-
-        '<script>' +
-        'if (window.File) {' +
-        'var thumb = document.getElementById("thumb");' +
-        'var select = document.getElementById("file_photo");' +
-        'select.addEventListener("change", function (e) {' +
-        'var fileData = e.target.files[0];' +
-        'var imgType = fileData.type;' +
-
-
-        'var reader = new FileReader();' +
-        'reader.onload = function () {' +
-        'var insert = "<input type = \'image\' src=" + reader.result + " alt = \'撮影してください\'><br>";' +
-        'thumb.innerHTML = insert;' +
-        '};' +
-        'reader.readAsDataURL(fileData);' +
-        '}, false);' +
-        '}</script >'
-    );
+		form.on('fileBegin', function (name, file) {
+			path = file.path;
+			console.log(path);
+			file.path = submitpath + "/" + cnt + ".jpg";
+			console.log("Your file was submitted as \n" + submitpath + "/" + (cnt) + ".jpg");
+			cnt++;
+		});
+	}
 }).listen(port);
-console.log("server is running at http://" + hostname + ":" + port + "");
+
+console.log("Server is running at " + url);
