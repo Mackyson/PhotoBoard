@@ -37,11 +37,11 @@ window.onload = function () {
 
 
 
-            if (core.input.left && !isButtonDown) {
+            if (core.input.left && !isButtonDown && !isAnimating) {
                 if (cnt > 0) cnt--;
                 isButtonDown = true;
             }
-            if (core.input.right && !isButtonDown) {
+            if (core.input.right && !isButtonDown && !isAnimating) {
                 cnt++;
                 isButtonDown = true;
             }
